@@ -1,39 +1,693 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aula 01 - Império Beauty</title>
 
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+<style>
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+  scroll-behavior:smooth;
+}
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+/* CUSTOMIZAÇÃO DA BARRINHA DE ROLAGEM ROSA */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #e61b72 #ffffff;
+}
 
-jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
+::-web<button class="btn" onclick="irParaProxima()">
+kit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e61b72;
+  border-radius: 10px;
+}
+
+body{
+  background:#fff;
+  overflow-x:hidden;
+  color:#111;
+}
+
+/* LOADING */
+
+.loader{
+  position:fixed;
+  inset:0;
+  background:white;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  transition:1s;
+}
+
+.loader.hide{
+  opacity:0;
+  pointer-events:none;
+}
+
+.loader h1{
+  color:#ff4fa0;
+  font-size:3rem;
+  margin-bottom:30px;
+}
+
+.bar{
+  width:300px;
+  height:12px;
+  background:#eee;
+  border-radius:50px;
+  overflow:hidden;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ff4fa0,#ff77b7);
+  border-radius:50px;
+  transition:.2s;
+}
+
+.percent{
+  margin-top:18px;
+  font-size:1.2rem;
+  color:#555;
+  font-weight:600;
+}
+
+/* NAV */
+
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:9999;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 8%;
+  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.75);
+  border-bottom:1px solid rgba(255,79,160,0.12);
+}
+
+.logo{
+  color:#ff4fa0;
+  font-size:1.5rem;
+  font-weight:800;
+}
+
+.btn{
+  border:none;
+  padding:14px 28px;
+  border-radius:40px;
+  background:#ff4fa0;
+  color:white;
+  cursor:pointer;
+  font-weight:600;
+  transition:.4s;
+  box-shadow:0 0 25px rgba(255,79,160,.35);
+}
+
+.btn:hover{
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:0 0 45px rgba(255,79,160,.5);
+}
+
+/* HERO */
+
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:140px 8%;
+  position:relative;
+  overflow:hidden;
+
+  background:
+  radial-gradient(circle at top right, rgba(255,79,160,.15), transparent 30%),
+  radial-gradient(circle at bottom left, rgba(255,79,160,.12), transparent 25%),
+  #fff;
+}
+
+.glow{
+  position:absolute;
+  width:450px;
+  height:450px;
+  border-radius:50%;
+  background:#ff4fa0;
+  filter:blur(120px);
+  opacity:.12;
+}
+
+.g1{
+  top:-120px;
+  right:-120px;
+}
+
+.g2{
+  bottom:-120px;
+  left:-120px;
+}
+
+.lesson-number{
+  position:absolute;
+  left:40px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:7rem;
+  font-weight:800;
+  color:rgba(255,79,160,.12);
+}
+
+.hero-content{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:70px;
+  align-items:center;
+  width:100%;
+}
+
+.hero-text{
+  opacity:0;
+  transform:translateX(-80px);
+  transition:1s;
+}
+
+.hero-text.show{
+  opacity:1;
+  transform:translateX(0);
+}
+
+.hero-text h1{
+  font-size:4rem;
+  line-height:1.1;
+  margin-bottom:25px;
+}
+
+.pink{
+  color:#ff4fa0;
+}
+
+.hero-text p{
+  color:#555;
+  font-size:1.1rem;
+  line-height:1.9;
+  margin-bottom:35px;
+}
+
+.hero-image{
+  position:relative;
+  opacity:0;
+  transform:translateX(80px);
+  transition:1s;
+}
+
+.hero-image.show{
+  opacity:1;
+  transform:translateX(0);
+}
+
+.hero-image img{
+  width:100%;
+  border-radius:30px;
+  box-shadow:0 20px 60px rgba(255,79,160,.25);
+  animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-15px);}
+  100%{transform:translateY(0);}
+}
+
+.floating{
+  position:absolute;
+  background:white;
+  padding:14px 20px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  color:#ff4fa0;
+  font-weight:600;
+  animation:float 3s infinite ease-in-out;
+}
+
+.f1{
+  top:20px;
+  left:-25px;
+}
+
+.f2{
+  bottom:40px;
+  right:-20px;
+}
+
+/* SECTION */
+
+section{
+  padding:120px 8%;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:70px;
+}
+
+.section-title h2{
+  font-size:3rem;
+  margin-bottom:15px;
+}
+
+.section-title p{
+  color:#666;
+}
+
+/* CARDS */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:30px;
+}
+
+.card{
+  background:white;
+  padding:35px;
+  border-radius:30px;
+  border:1px solid rgba(255,79,160,.1);
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+  transition:.5s;
+  opacity:0;
+  transform:translateY(60px);
+}
+
+.card.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 20px 50px rgba(255,79,160,.18);
+}
+
+.card span{
+  font-size:3rem;
+}
+
+.card h3{
+  margin:20px 0;
+  font-size:1.3rem;
+}
+
+.card p{
+  color:#666;
+  line-height:1.8;
+}
+
+/* MARKET */
+
+.market{
+  background:#fff7fb;
+}
+
+.market-content{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:70px;
+  align-items:center;
+}
+
+.market img{
+  width:100%;
+  border-radius:30px;
+  box-shadow:0 20px 60px rgba(255,79,160,.2);
+}
+
+.market-text h2{
+  font-size:3rem;
+  margin-bottom:20px;
+}
+
+.market-text p{
+  color:#555;
+  line-height:1.9;
+  margin-bottom:20px;
+}
+
+.number-box{
+  background:white;
+  padding:25px;
+  border-radius:25px;
+  margin-top:20px;
+  display:inline-block;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.number-box h3{
+  color:#ff4fa0;
+  font-size:2rem;
+}
+
+/* CTA */
+
+.cta{
+  text-align:center;
+  background:
+  linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
+  url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1400&auto=format&fit=crop');
+
+  background-size:cover;
+  background-position:center;
+}
+
+.cta h2{
+  font-size:4rem;
+  margin-bottom:25px;
+}
+
+.cta p{
+  max-width:700px;
+  margin:auto;
+  margin-bottom:40px;
+  line-height:1.9;
+  color:#444;
+}
+
+/* FOOTER */
+
+footer{
+  background:#fff7fb;
+  text-align:center;
+  padding:40px;
+  color:#777;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:950px){
+
+  .hero-content,
+  .market-content{
+    grid-template-columns:1fr;
+  }
+
+  .lesson-number{
+    display:none;
+  }
+
+  .hero-text h1,
+  .market-text h2,
+  .cta h2{
+    font-size:2.6rem;
+  }
+
+  .floating{
+    display:none;
+  }
+
+  section,
+  .hero{
+    padding:120px 6%;
+  }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <h1>Império Beauty</h1>
+
+  <div class="bar">
+    <span id="progress"></span>
+  </div>
+
+  <div class="percent" id="percent">
+    0%
+  </div>
+</div>
+
+<div class="navbar">
+  <div class="logo">Império Beauty</div>
+
+  <button class="btn id-btn-aula">
+    Aula 01
+  </button>
+</div>
+
+<section class="hero">
+
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+
+  <div class="lesson-number id-fundo-aula">
+    01
+  </div>
+
+  <div class="hero-content">
+
+    <div class="hero-text reveal-left">
+
+      <h1>
+        Bem-vinda ao <span class="pink">Império das Unhas & Cílios</span>
+      </h1>
+
+      <p>
+        Descubra como milhares de mulheres estão transformando suas vidas trabalhando com unhas premium e extensão de cílios diretamente da própria casa.
+      </p>
+
+      <button class="btn" onclick="scrollToSection()">
+        COMEÇAR AULA
+      </button>
+
+    </div>
+
+    <div class="hero-image reveal-right">
+
+      <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=1200&auto=format&fit=crop">
+
+      <div class="floating f1">
+        💅 Mercado Bilionário
+      </div>
+
+      <div class="floating f2">
+        ✨ Renda Extra
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="nextSection">
+
+  <div class="section-title">
+    <h2>O que você vai aprender</h2>
+    <p>Técnicas modernas e profissionais</p>
+  </div>
+
+  <div class="cards">
+
+    <div class="card reveal">
+      <span>💅</span>
+      <h3>Alongamento em Gel</h3>
+      <p>Aprenda técnicas modernas para unhas premium e acabamento profissional.</p>
+    </div>
+
+    <div class="card reveal">
+      <span>✨</span>
+      <h3>Fibra de Vidro</h3>
+      <p>Estrutura perfeita, resistência e acabamento luxuoso.</p>
+    </div>
+
+    <div class="card reveal">
+      <span>👁️</span>
+      <h3>Extensão de Cílios</h3>
+      <p>Do fio a fio ao volume russo completo para clientes premium.</p>
+    </div>
+
+    <div class="card reveal">
+      <span>📸</span>
+      <h3>Instagram</h3>
+      <p>Como conseguir clientes todos os dias através das redes sociais.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="market">
+
+  <div class="market-content">
+
+    <img class="reveal-left"
+    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop">
+
+    <div class="market-text reveal-right">
+
+      <h2>
+        O mercado da beleza cresce todos os dias
+      </h2>
+
+      <p>
+        Milhares de mulheres começaram atendendo em casa e hoje possuem agendas lotadas e estúdios próprios.
+      </p>
+
+      <p>
+        Você também pode transformar isso em uma renda mensal trabalhando com algo feminino, moderno e lucrativo.
+      </p>
+
+      <div class="number-box">
+        <h3>25</h3>
+        <p>Aulas Premium</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <div class="reveal">
+
+    <h2>
+      Sua nova fase começa agora
+    </h2>
+
+    <p>
+      Na próxima aula você vai conhecer todos os materiais essenciais para começar da maneira correta.
+    </p>
+
+<button class="btn" onclick="irParaProxima()">
+  IR PARA PRÓXIMA AULA
+</button>
+
+
+  </div>
+
+</section>
+
+<footer>
+  © 2026 Império das Unhas & Cílios — Todos os direitos reservados.
+</footer>
+
+<script>
+
+/* ========================================================
+   SISTEMA AUTOMÁTICO DE LIAME DAS AULAS (AULA 1 ATÉ 25)
+   ======================================================== */
+const NUMERO_AULA = 1; // Nas próximas páginas mude apenas esse número! Ex: 2, 3, 4...
+
+// Formata o número (Ex: 1 vira "01")
+const numFormatado = String(NUMERO_AULA).padStart(2, '0');
+
+// Altera os elementos dinamicamente com base no número escolhido acima
+document.title = "Aula " + numFormatado + " - Império Beauty";
+document.querySelector(".id-btn-aula").textContent = "Aula " + numFormatado;
+document.querySelector(".id-fundo-aula").textContent = numFormatado;
+
+// CORRIGIDO: Agora formata com o zero na frente (Ex: vira "aula02.html")
+function irParaProxima() {
+  const proximaAula = NUMERO_AULA + 1;
+  const próximoNomeFormatado = String(proximaAula).padStart(2, '0');
+  window.location.href = "aula" + próximoNomeFormatado + ".html";
+}
+
+
+/* LOADING */
+
+let count = 0;
+const percent = document.getElementById("percent");
+const progress = document.getElementById("progress");
+const loader = document.getElementById("loader");
+
+const interval = setInterval(() => {
+
+  count++;
+
+  percent.innerHTML = count + "%";
+  progress.style.width = count + "%";
+
+  if(count >= 100){
+    clearInterval(interval);
+
+    setTimeout(()=>{
+      loader.classList.add("hide");
+    },500);
+  }
+
+},25);
+
+/* SCROLL BUTTON */
+
+function scrollToSection(){
+  document.getElementById("nextSection")
+  .scrollIntoView({behavior:"smooth"});
+}
+
+/* REVEAL */
+
+const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+window.addEventListener('scroll', ()=>{
+
+  reveals.forEach(el=>{
+
+    const top = el.getBoundingClientRect().top;
+
+    if(top < window.innerHeight - 100){
+
+      if(el.classList.contains('reveal-left')){
+        el.classList.add('show');
+      }
+
+      if(el.classList.contains('reveal-right')){
+        el.classList.add('show');
+      }
+
+      if(el.classList.contains('reveal')){
+        el.classList.add('show');
+      }
+
+    }
+
+  });
+
+});
+
+/* START */
+
+window.dispatchEvent(new Event('scroll'));
+
+</script>
+
+</body>
+</html>
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
